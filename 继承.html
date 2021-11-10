@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <script>
+        // 1. 原型链实现继承
+
+        function SuperType(){}
+
+        SuperType.prototype.getValue = function(){
+            return this.value
+        }
+
+        function Super(){
+            this.value = 'super value'
+        }
+
+        // 继承 SuperType
+        Super.prototype = new SuperType()
+
+        const s1 = new Super()
+        console.log(s1.getValue())
+
+        /*
+            原型链实现继承有两个问题：
+            1. 原型中包含的引用值会在所有实例之间共享
+            2. 子类型在实例化的时候不能给类型的构造函数传参
+        */
+
+
+        // 2. 盗用构造函数
+        
+        function Animal(){
+            this.color= ['red','yellow','black']
+        }
+
+        function Dog(){
+            // 这里的this指向Dog
+            Animal.call(this)
+        }
+
+        const d1 = new Dog()
+        console.log(d1.color) // ['red','yellow','black']
+
+        /*
+            相对于原型链，构造函数优点在于可以在子类构造函数中向父类构造函数传参
+            缺点：必须在构造函数中定义方法，因此函数不能重用。
+                此外，子类也不能访问父类原型上定义的方法
+        */
+
+        // 3. 组合式继承 (综合了原型链和盗用构造函数)
+
+        function Person(name){
+            this.name = name
+        }
+
+        Person.prototype.color = 'yellow'
+
+        function Children(name,age){
+            Person.call(this,name)
+            this.age = age
+        }
+        Children.prototype = new Person()
+
+        const c1 = new Children('xiaoming','22')
+        const c2 = new Children('张三','34')
+        console.log(c1) // {name: 'xiaoming', age: '22'}
+        console.log(c2) // {name: '张三', age: '34'}
+        /*
+            既可以把方法定义在原型上以实现重用，又可以让每个实例拥有自己的属性
+        */
+
+        // 4. 寄生式继承
+        
+        function CreateAnother(origin){
+            let clone = Object(origin)
+            clone.sayHi = function(){
+                console.log('hi')
+            }
+            return clone 
+        }
+
+        /*
+            寄生式继承背后的思路类似寄生式构造函数和工厂模式。
+            ！！！
+            通过寄生式继承给对象添加函数会导致函数难以复用，与构造函数类似
+        */
+
+        // 5. 寄生式组合继承 (是引用类型继承的最佳模式)
+         
+        // 核心逻辑
+        function inherit(son,father){
+            let prototype = Object(father.prototype) // 创建父类的原型副本
+            prototype.constructor = son // 增强父类原型副本
+            son.prototype = prototype //赋值对象
+        }
+
+        function Father(name){
+            this.name = name
+        }
+
+        Father.prototype.sayname = function(){
+            return this.name
+        }
+
+        function Son(name,age){
+            Father.call(this,name)
+            this.age = age
+        }
+        inherit(Son,Father)
+
+        Son.prototype.sayage = function(){
+            return this.age
+        }
+
+        const son1 = new Son('李四','12')
+        const son2 = new Son('张三','98')
+        console.log(son1.sayage())
+        console.log(son1.sayname())
+        console.log(son2.sayage())
+        console.log(son2.sayname())
+    </script>
+    
+</body>
+</html>
