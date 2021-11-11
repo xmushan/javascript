@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 定义类的两种方式 (类表达式在它们被申明之前不能引用，函数可以提升，但是类不行)
+        // 1. 类声明
+        class Person{}
+        // 2. 类表达式
+        let Animal = class {}
+
+        // 类可以包含 构造函数、实例方法、静态类方法、获取函数、设置函数 （但是都不是必需的）
+        
+        class Super{
+            constructor(){
+                console.log('Super')
+            }
+        }
+
+        // 使用new调用类的构造函数会执行5个操作
+        /*
+            1. 在内存中创建一个新的对象
+            2. 这个新对象的隐式原型指针呗赋值为构造函数的prototype属性
+            3. 构造函数内部的this被赋值为这个新对象
+            4. 执行构造函数内部的代码（给新对象添加属性）
+            5. 如果构造函数返回非空对象，则返回该对象，否则，返回刚创建的新对象
+        */
+
+        const s = new Super()
+        // 默认情况下，类构造函数会在执行之后返回this对象。
+        // 如果返回的不是this对象，而是其他对象，那么就不能被 instanceof 操作符检测出跟类由关联
+
+
+
+        // 1. 实例成员 
+        // 每次通过new调用标识符，都会执行类构造函数，可以为为新创建的实例（this）添加“自有属性”。
+        // 每个实例都对应一个唯一的成员对象，也就是说所有的成员不会在原型上共享
+
+        class Sup{
+            constructor(){
+                this.name = new String('张三')
+                // 添加到this 的所有的内容都会存在于不通的实例上
+                this.sayName = function(){
+                    console.log(this.name)
+                }
+            }
+            
+            // 在类块中定义的所有内容都会定义在类的原型上
+            local(){
+                console.log('prototype')
+            }
+            
+            // 定义在类的本身
+            static locate(){
+                console.log('state locate')
+            }
+
+
+        }
+        
+        const sup1 = new Sup()
+        const sup2 = new Sup()
+
+        // 两个实例上的属性并不是共享的
+        console.log(sup1.name == sup2.name) // false
+        sup1.sayName()
+        sup1.__proto__.local() // 通过原型访问
+
+
+
+        
+    </script>
+</body>
+</html>
