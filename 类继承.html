@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <script>
+        // Es6 类支持单继承，使用extends关键字，就可以继承任何拥有 [[ constructor ]]和原型的对象
+
+
+        // 类继承
+        class Super{}
+
+        class Sup extends Super{}
+
+        const s1 = new Sup()
+        console.log(s1 instanceof Sup) //true
+        console.log(s1 instanceof Super) // true
+        
+        // 继承普通构造函数
+        function Animal(){}
+
+        class Dog extends Animal{}
+
+        const d1 = new Dog()
+        console.log(d1 instanceof Animal) // true
+        console.log(d1 instanceof Dog) // true
+
+        // !!! extends 关键字也可以在类表达式中使用，因此let Bar = class extends Foo()
+
+
+        // super 关键字
+        /*
+            1. 只能在派生类构造函数和静态方法中使用
+            2. 不要单独引用super关键字，要么用它调用构造函数，要么用它应用静态方法
+            3. 调用super（）会调用父类构造函数，并将返回的实例赋值给this
+            4. super()的行为如同调用构造函数，如果需要给父类构造函数传参，则需要手动传入
+            5. 如果没有定义类构造函数，在实例华派生类时调用super(),会将所有参数传给父类构造函数 // 见例5
+            6. 在类构造函数中，不能在调用super()之前引用this
+            7. 如果在派生类中显示定义了构造函数，则要么必须在其中调用super()，要么必须在其中返回一个对象
+        */
+
+        class Foo{
+            static fun(){
+                console.log('static fun')
+            }
+        }
+
+        class Bar extends Foo{
+            
+            constructor(){
+                // 一定不要再super之前引用this，会抛出 referenceError错误
+                super() // 相当于super.constructor()
+            }
+
+            // 在静态方法中可以通过super调用继承类上定义的静态方法
+            static say(){
+                super.fun()
+            }
+        }
+
+        Bar.say()
+
+        // 例5
+        class Vehicle{
+            constructor(name){
+                this.name = name
+            }
+        }
+
+        // 没有显示调用super 关键字
+        class Bus extends Vehicle{}
+
+        // 参数都传给了父类构造函数
+        console.log(new Bus('bus'))
+        
+
+
+        
+    </script>
+    
+</body>
+</html>
