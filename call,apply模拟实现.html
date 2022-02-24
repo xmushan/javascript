@@ -11,7 +11,7 @@
 <body>
 
     <script>
-        // 模拟bind实现
+        // 模拟call实现
         // 整体思路
         /**
          * 1. 将函数设为对象的属性
@@ -25,6 +25,20 @@
             const args = Array.prototype.slice.call(rest, 1)
             context.fn = this
             const result = context.fn(...args)
+            delete context.fn
+            return result
+        }
+        // 模拟apply的实现
+        // 整体思路和call是一样的，无非就是对apply数组参数的处理
+        Function.prototype.apply2 = function (context1, arr) {
+            const context = Object(context1) || window
+            context.fn = this
+            let result
+            if (!arr.length) {
+                result = context.fn()
+            } else {
+                result = context.fn(...arr)
+            }
             delete context.fn
             return result
         }
