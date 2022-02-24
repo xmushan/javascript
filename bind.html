@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        Function.prototype.bind2 = function (...rest) {
+            if (typeof this !== "function") {
+                throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
+            }
+            const context = rest[0]
+            const args = Array.prototype.slice.call(rest, 1)
+            const self = this
+
+            const obj = function () {
+                var bindArgs = Array.prototype.slice.call(arguments);
+                self.apply(context, args.concat(bindArgs))
+            }
+        }
+
+        let bar = { value: '1' }
+
+        function foo() {
+            console.log(this.value)
+        }
+
+        const newfoo = foo.bind(bar)
+        newfoo()
+    </script>
+</body>
+
+</html>
